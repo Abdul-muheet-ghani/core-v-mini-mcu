@@ -205,7 +205,7 @@ module cpu_subsystem
     );
 `endif
 
-`ifdef CV3240X
+`ifdef CV32E40X
     if_xif #(
       .X_NUM_RS    ( 2  ),
       .X_MEM_WIDTH ( 32 ),
@@ -252,7 +252,7 @@ module cpu_subsystem
       .data_dbg_o(),
       .data_err_i('0),
       .data_atop_o(),
-      .data_exokay_i('0),
+      .data_exokay_i('1),
   
       .mcycle_o(),
   
