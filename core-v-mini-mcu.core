@@ -12,6 +12,7 @@ filesets:
     depend:
     - x-heep::packages
     - openhwgroup.org:ip:cv32e40p
+    - openhwgroup.org:ip:cv32e40x
     - pulp-platform.org:ip:fpnew
     - pulp-platform.org::common_cells
     - pulp-platform.org::cluster_interconnect
@@ -127,6 +128,22 @@ filesets:
     file_type: systemVerilogSource
 
 parameters:
+  CV32E20:
+    datatype: bool
+    paramtype: vlogdefine
+    default: false
+  CV32E40P:
+    datatype: bool
+    paramtype: vlogdefine
+    default: false
+  CV32E40X:
+    datatype: bool
+    paramtype: vlogdefine
+    default: false
+  COREV_ASSERT_OFF:
+    datatype: bool
+    paramtype: vlogdefine
+    default: false
   PULP_XPULP:
     datatype: int
     paramtype: vlogparam
@@ -208,8 +225,12 @@ targets:
         - tool_modelsim? (pre_patch_modelsim_Makefile) # this is required by Questa 2020 on
     parameters:
     - PULP_XPULP=0
+    - CV32E20? (CV32E20=true)
+    - CV32E40P? (CV32E40P=true)
+    - CV32E40X? (CV32E40X=true)
     - use_jtag_dpi? (JTAG_DPI=1)
     - "!use_jtag_dpi? (JTAG_DPI=0)"
+    - COREV_ASSERT_OFF? (COREV_ASSERT_OFF=true)
     - use_external_device_example? (USE_EXTERNAL_DEVICE_EXAMPLE=true)
     tools:
       modelsim:
@@ -249,6 +270,7 @@ targets:
           - '--x-assign unique'
           - '--x-initial unique'
           - '--exe tb_top.cpp'
+          - '-Wno-BLKANDNBLK'
           - '-CFLAGS "-std=c++11 -Wall -g -fpermissive"'
           - '-LDFLAGS "-pthread -lutil -lelf"'
           - "-Wall"

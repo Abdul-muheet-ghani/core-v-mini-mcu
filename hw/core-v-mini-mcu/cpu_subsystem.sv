@@ -1,7 +1,6 @@
 // Copyright 2022 OpenHW Group
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
-
 module cpu_subsystem
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
@@ -42,8 +41,8 @@ module cpu_subsystem
   assign core_instr_req_o.we    = '0;
   assign core_instr_req_o.be    = 4'b1111;
 
-  if (CPU_TYPE == cv32e20) begin : gen_cv32e20
-
+ // if (CPU_TYPE == cv32e20) begin : gen_cv32e20
+`ifdef CV32E20
     logic [4:0] rf_raddr_a, rf_raddr_b, rf_waddr_wb;
     logic [31:0] rf_rdata_a, rf_rdata_b, rf_wdata_wb;
     logic rf_we_wb;
@@ -154,8 +153,9 @@ module cpu_subsystem
     assign irq_ack_o = '0;
     assign irq_id_o  = '0;
 
-  end else begin : gen_cv32e40p
-
+  `endif
+  //else if (CPU_TYPE == cv32e40p) begin : gen_cv32e40p
+`ifdef CV32E40P
     // instantiate the core
     cv32e40p_tb_wrapper #(
         .PULP_XPULP      (PULP_XPULP),
@@ -170,7 +170,7 @@ module cpu_subsystem
         .pulp_clock_en_i(1'b1),
         .scan_cg_en_i   (1'b0),
 
-        .boot_addr_i        (BOOT_ADDR),
+        .boot_addr_i        ('0),
         .mtvec_addr_i       (32'h0),
         .dm_halt_addr_i     (DM_HALTADDRESS),
         .hart_id_i          (32'h0),
@@ -203,7 +203,85 @@ module cpu_subsystem
         .fetch_enable_i(fetch_enable_i),
         .core_sleep_o  ()
     );
+`endif
 
-  end
+`ifdef CV3240X
+    if_xif #(
+      .X_NUM_RS    ( 2  ),
+      .X_MEM_WIDTH ( 32 ),
+      .X_RFR_WIDTH ( 32 ),
+      .X_RFW_WIDTH ( 32 ),
+      .X_MISA      ( '0 )
+  ) ext_if();
+  
+    cv32e40x_core #(
+      .NUM_MHPMCOUNTERS (NUM_MHPMCOUNTERS)  
+    ) cv32e40x_core_i(
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+  
+      .scan_cg_en_i   (1'b0),
+  
+      .boot_addr_i        (BOOT_ADDR),
+      .mtvec_addr_i       (32'h0),
+      .mhartid_i          ('0),    
+      .dm_halt_addr_i     (DM_HALTADDRESS),
+      .mimpid_patch_i     (4'h0),
+      .dm_exception_addr_i(32'h0),
+  
+      .instr_addr_o  (core_instr_req_o.addr),
+      .instr_req_o   (core_instr_req_o.req),
+      .instr_rdata_i (core_instr_resp_i.rdata),
+      .instr_gnt_i   (core_instr_resp_i.gnt),
+      .instr_rvalid_i(core_instr_resp_i.rvalid),
+      .instr_memtype_o(),
+      .instr_prot_o(),
+      .instr_dbg_o(),
+      .instr_err_i(1'b0),
+  
+      .data_addr_o  (core_data_req_o.addr),
+      .data_wdata_o (core_data_req_o.wdata),
+      .data_we_o    (core_data_req_o.we),
+      .data_req_o   (core_data_req_o.req),
+      .data_be_o    (core_data_req_o.be),
+      .data_rdata_i (core_data_resp_i.rdata),
+      .data_gnt_i   (core_data_resp_i.gnt),
+      .data_rvalid_i(core_data_resp_i.rvalid),
+      .data_memtype_o(),
+      .data_prot_o(),
+      .data_dbg_o(),
+      .data_err_i('0),
+      .data_atop_o(),
+      .data_exokay_i('0),
+  
+      .mcycle_o(),
+  
+      .xif_compressed_if(ext_if),
+      .xif_issue_if(ext_if),
+      .xif_commit_if(ext_if),
+      .xif_mem_if(ext_if),
+      .xif_mem_result_if(ext_if),
+      .xif_result_if(ext_if),
+  
+      .irq_i    (irq_i),
+  
+      .clic_irq_i(),
+      .clic_irq_id_i(),
+      .clic_irq_level_i(),
+      .clic_irq_priv_i(),
+      .clic_irq_shv_i(),
+  
+      .fencei_flush_req_o(),
+      .fencei_flush_ack_i('0),
+  
+      .debug_req_i      (debug_req_i),
+      .debug_havereset_o(),
+      .debug_running_o  (),
+      .debug_halted_o   (),
+  
+      .fetch_enable_i(fetch_enable_i),
+      .core_sleep_o  ()
+    );
+    `endif
 
 endmodule

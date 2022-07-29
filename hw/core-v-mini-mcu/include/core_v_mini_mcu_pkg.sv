@@ -22,7 +22,7 @@ package core_v_mini_mcu_pkg;
     cv32e20
   } cpu_type_e;
 
-  localparam cpu_type_e CpuType = cv32e20;
+  localparam cpu_type_e CpuType = cv32e40p;
 
   //must be power of two
   localparam int unsigned MEM_SIZE = 2 ** 16;
