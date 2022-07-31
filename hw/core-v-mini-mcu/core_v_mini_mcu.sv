@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 module core_v_mini_mcu
   import obi_pkg::*;
+  import cv32e40x_pkg::*;
   import reg_pkg::*;
 #(
     parameter PULP_XPULP = 0,

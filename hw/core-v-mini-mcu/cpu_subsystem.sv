@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 module cpu_subsystem
   import obi_pkg::*;
+  import cv32e40x_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
     parameter BOOT_ADDR = 'h180,
@@ -170,7 +171,7 @@ module cpu_subsystem
         .pulp_clock_en_i(1'b1),
         .scan_cg_en_i   (1'b0),
 
-        .boot_addr_i        ('0),
+        .boot_addr_i        (BOOT_ADDR),
         .mtvec_addr_i       (32'h0),
         .dm_halt_addr_i     (DM_HALTADDRESS),
         .hart_id_i          (32'h0),
@@ -215,14 +216,32 @@ module cpu_subsystem
   ) ext_if();
   
     cv32e40x_core #(
-      .NUM_MHPMCOUNTERS (NUM_MHPMCOUNTERS)  
+      .LIB                     (0),
+      .RV32                    (RV32I),
+      .A_EXT                   (0),
+      .B_EXT                   (B_NONE),
+      .M_EXT                   (M),
+      .DBG_NUM_TRIGGERS        (1),
+      .PMA_NUM_REGIONS         (0),
+      .PMA_CFG                 (),
+      .SMCLIC                  (0),
+      .SMCLIC_ID_WIDTH         (5),
+      .X_EXT                   (0),
+      .X_NUM_RS                (20),
+      .X_ID_WIDTH              (4),
+      .X_MEM_WIDTH             (32),
+      .X_RFR_WIDTH             (32),
+      .X_RFW_WIDTH             (32),
+      .X_MISA                  ('0),
+      .X_ECS_XS                ('0),
+      .NUM_MHPMCOUNTERS        (1)
     ) cv32e40x_core_i(
       .clk_i (clk_i),
       .rst_ni(rst_ni),
   
       .scan_cg_en_i   (1'b0),
   
-      .boot_addr_i        (BOOT_ADDR),
+      .boot_addr_i        ('0),
       .mtvec_addr_i       (32'h0),
       .mhartid_i          ('0),    
       .dm_halt_addr_i     (DM_HALTADDRESS),
@@ -252,7 +271,7 @@ module cpu_subsystem
       .data_dbg_o(),
       .data_err_i('0),
       .data_atop_o(),
-      .data_exokay_i('1),
+      .data_exokay_i('0),
   
       .mcycle_o(),
   
@@ -265,11 +284,11 @@ module cpu_subsystem
   
       .irq_i    (irq_i),
   
-      .clic_irq_i(),
-      .clic_irq_id_i(),
-      .clic_irq_level_i(),
-      .clic_irq_priv_i(),
-      .clic_irq_shv_i(),
+      .clic_irq_i('0),
+      .clic_irq_id_i('0),
+      .clic_irq_level_i('0),
+      .clic_irq_priv_i('0),
+      .clic_irq_shv_i('0),
   
       .fencei_flush_req_o(),
       .fencei_flush_ack_i('0),
