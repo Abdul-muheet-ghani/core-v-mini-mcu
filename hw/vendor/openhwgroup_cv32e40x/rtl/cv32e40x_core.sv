@@ -37,7 +37,7 @@ module cv32e40x_core import cv32e40x_pkg::*;
   parameter b_ext_e                     B_EXT                                   = B_NONE,
   parameter m_ext_e                     M_EXT                                   = M,
   parameter int                         DBG_NUM_TRIGGERS                        = 1,
-  parameter int                         PMA_NUM_REGIONS                         = 0,
+  parameter int                         PMA_NUM_REGIONS                         = 1,
   parameter pma_cfg_t                   PMA_CFG[PMA_NUM_REGIONS-1:0]            = '{default:PMA_R_DEFAULT},
   parameter bit                         SMCLIC                                  = 0,
   parameter int                         SMCLIC_ID_WIDTH                         = 5,
