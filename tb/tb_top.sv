@@ -53,9 +53,10 @@ module tb_top #(
       $dumpvars(0, tb_top);
     end
   end
-
+/*
   // we either load the provided firmware or execute a small test program that
   // doesn't do more than an infinite loop with some I/O
+  `ifndef CV32E40X
   initial begin : load_prog
     automatic string firmware;
 
@@ -71,6 +72,25 @@ module tb_top #(
       $finish;
     end
   end
+`endif*/
+
+  `ifdef CV32E40X
+  initial begin: load_prog
+    automatic logic [1023:0] firmware;
+    automatic int prog_size = 6;
+
+    if($value$plusargs("firmware=%s", firmware)) begin
+        if($test$plusargs("verbose"))
+            $display("[TESTBENCH] %t: loading firmware %0s ...",
+                     $time, firmware);
+        $readmemh(firmware, testharness_i.core_v_mini_mcu_i.cv32e40x_tb_wrapper_i.ram_i.dp_ram_i.mem);
+
+    end else begin
+        $display("No firmware specified");
+        $finish;
+    end
+ end
+ `endif
 
   // clock generation
   initial begin : clock_gen

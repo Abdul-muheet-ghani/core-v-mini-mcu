@@ -10,7 +10,9 @@ module core_v_mini_mcu
     parameter FPU = 0,
     parameter PULP_ZFINX = 0,
     parameter EXT_XBAR_NMASTER = 0,
-    parameter EXT_NINTERRUPT = 0
+    parameter EXT_NINTERRUPT = 0,
+    parameter INSTR_RDATA_WIDTH = 128,
+    parameter RAM_ADDR_WIDTH = 22
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -125,6 +127,23 @@ module core_v_mini_mcu
       .debug_req_i(debug_core_req),
       .fetch_enable_i(fetch_enable_i)
   );
+
+  cv32e40x_tb_wrapper
+  #(.INSTR_RDATA_WIDTH (INSTR_RDATA_WIDTH),
+    .RAM_ADDR_WIDTH    (RAM_ADDR_WIDTH),
+    .BOOT_ADDR         ('h180),
+    .DM_HALTADDRESS    (32'h1A11_0800),
+    .HART_ID           (32'h0000_0000),
+    .NUM_MHPMCOUNTERS  (1)
+   )
+cv32e40x_tb_wrapper_i
+  (.clk_i          ( clk_i          ),
+   .rst_ni         ( rst_ni         ),
+   .fetch_enable_i ( fetch_enable_i ),
+   .tests_passed_o (  ),
+   .tests_failed_o (  ),
+   .exit_valid_o   ( exit_valid_o   ),
+   .exit_value_o   ( exit_value_o   ));
 
 
   debug_subsystem #(

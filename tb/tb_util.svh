@@ -75,7 +75,7 @@ task tb_writetoSram0;
   force core_v_mini_mcu_i.memory_subsystem_i.ram0_i.tc_ram_i.sram[addr] = {val3, val2, val1, val0};
   release core_v_mini_mcu_i.memory_subsystem_i.ram0_i.tc_ram_i.sram[addr];
 `else
-  core_v_mini_mcu_i.memory_subsystem_i.ram0_i.tc_ram_i.sram[addr] = {val3, val2, val1, val0};
+  core_v_mini_mcu_i.cv32e40x_tb_wrapper_i.ram_i.dp_ram_i.mem[addr] = {val3, val2, val1, val0};
 `endif
 endtask
 
@@ -89,7 +89,7 @@ task tb_writetoSram1;
   force core_v_mini_mcu_i.memory_subsystem_i.ram1_i.tc_ram_i.sram[addr] = {val3, val2, val1, val0};
   release core_v_mini_mcu_i.memory_subsystem_i.ram1_i.tc_ram_i.sram[addr];
 `else
-  core_v_mini_mcu_i.memory_subsystem_i.ram1_i.tc_ram_i.sram[addr] = {val3, val2, val1, val0};
+  core_v_mini_mcu_i.cv32e40x_tb_wrapper_i.ram_i.dp_ram_i.mem[addr] = {val3, val2, val1, val0};
 `endif
 endtask
 
