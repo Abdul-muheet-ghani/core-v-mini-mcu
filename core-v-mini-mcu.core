@@ -271,6 +271,7 @@ targets:
           - '--x-initial unique'
           - '--exe tb_top.cpp'
           - '-Wno-BLKANDNBLK'
+          - '-Wno-BLKSEQ'
           - '-CFLAGS "-std=c++11 -Wall -g -fpermissive"'
           - '-LDFLAGS "-pthread -lutil -lelf"'
           - "-Wall"
