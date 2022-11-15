@@ -171,7 +171,7 @@ module cpu_subsystem
         .pulp_clock_en_i(1'b1),
         .scan_cg_en_i   (1'b0),
 
-        .boot_addr_i        (BOOT_ADDR),
+        .boot_addr_i        ('h180),
         .mtvec_addr_i       (32'h0),
         .dm_halt_addr_i     (DM_HALTADDRESS),
         .hart_id_i          (32'h0),
@@ -207,6 +207,9 @@ module cpu_subsystem
 `endif
 
 `ifdef CV32E40X
+
+    logic [3:0]be;
+    assign core_data_req_o.be = 4'b1111 - (be-1);
     if_xif #(
       .X_NUM_RS    ( 2  ),
       .X_MEM_WIDTH ( 32 ),
@@ -214,7 +217,7 @@ module cpu_subsystem
       .X_RFW_WIDTH ( 32 ),
       .X_MISA      ( '0 )
   ) ext_if();
-  
+  import cv32e40x_pkg::*;
     cv32e40x_core #(
       .LIB                     (0),
       .RV32                    (RV32I),
@@ -241,7 +244,7 @@ module cpu_subsystem
   
       .scan_cg_en_i   (1'b0),
   
-      .boot_addr_i        ('0),
+      .boot_addr_i        ('h180),
       .mtvec_addr_i       (32'h0),
       .mhartid_i          ('0),    
       .dm_halt_addr_i     (DM_HALTADDRESS),
